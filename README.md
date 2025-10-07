@@ -9,9 +9,8 @@ Photo Metadata Remover: https://andrewsink.github.io/photo-metadata-remover/
 ## 🔒 Privacy First
 
 - **100% Local Processing** - Your photos never leave your device
-- **No Uploads** - All processing happens in your browser
-- **No Data Collection** - We don't store or track anything
-- **Open Source** - Full transparency in how your data is handled
+- **No Cloud Uploads** - All processing happens in your browser
+- **No Data Collection** - Nothing is stored or tracked
 
 ## ✨ Features
 
@@ -30,11 +29,11 @@ Photo Metadata Remover: https://andrewsink.github.io/photo-metadata-remover/
 ### Sensitive Data
 - GPS coordinates and location information
 - Date and time stamps
+- Camera make and model
 - Camera owner information
 - Software information
 
 ### Technical Properties
-- Camera make and model
 - Camera settings (ISO, aperture, etc.)
 - Image dimensions and resolution
 - Color space information
@@ -43,7 +42,6 @@ Photo Metadata Remover: https://andrewsink.github.io/photo-metadata-remover/
 
 1. **Upload** your JPEG photo using drag & drop
 2. **Review** the metadata found in your image
-3. **Select** which data you want to remove
 4. **Download** your cleaned image
 
 ## 💻 Technical Details
