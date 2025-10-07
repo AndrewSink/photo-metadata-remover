@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Photo Metadata Remover - Remove EXIF Data Securely</title>
+        <meta name="description"
+            content="Securely remove EXIF metadata from JPEG photos directly in your browser. No uploads, completely private processing on your device.">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://andrewsink.xyz/photo-metadata-remover/">
+        <meta property="og:title" content="Photo Metadata Remover - Remove EXIF Data Securely">
+        <meta property="og:description"
+            content="Securely remove EXIF metadata from JPEG photos directly in your browser. No uploads, completely private processing on your device.">
+        <meta property="og:image" content="https://andrewsink.xyz/photo-metadata-remover/og-image.jpg">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Photo Metadata Remover - Secure EXIF data removal tool">
+        <meta property="og:site_name" content="Andrew Sink">
+        <meta property="og:locale" content="en_US">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://andrewsink.xyz/photo-metadata-remover/">
+        <meta name="twitter:title" content="Photo Metadata Remover - Remove EXIF Data Securely">
+        <meta name="twitter:description"
+            content="Securely remove EXIF metadata from JPEG photos directly in your browser. No uploads, completely private processing on your device.">
+        <meta name="twitter:image" content="https://andrewsink.xyz/photo-metadata-remover/og-image.jpg">
+        <meta name="twitter:image:alt" content="Photo Metadata Remover - Secure EXIF data removal tool">
+        <meta name="twitter:creator" content="@andrewsink">
+        <meta name="twitter:site" content="@andrewsink">
+
+        <!-- Additional SEO -->
+        <meta name="author" content="Andrew Sink">
+        <meta name="keywords"
+            content="EXIF, metadata, photo, privacy, JPEG, remove, secure, browser, local, GPS, location, camera data">
+        <meta name="robots" content="index, follow">
+        <meta name="googlebot" content="index, follow">
+        <meta name="theme-color" content="#667eea">
+        <meta name="application-name" content="Photo Metadata Remover">
+        <link rel="canonical" href="https://andrewsink.xyz/photo-metadata-remover/">
+
+        <!-- Structured Data for SEO -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Photo Metadata Remover",
+            "description": "Securely remove EXIF metadata from JPEG photos directly in your browser. No uploads, completely private processing on your device.",
+            "url": "https://andrewsink.xyz/photo-metadata-remover/",
+            "author": {
+                "@type": "Person",
+                "name": "Andrew Sink",
+                "url": "https://andrewsink.xyz"
+            },
+            "applicationCategory": "UtilityApplication",
+            "operatingSystem": "Web Browser",
+            "browserRequirements": "Requires JavaScript",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "featureList": [
+                "Remove EXIF metadata from photos",
+                "Local browser processing",
+                "No file uploads required",
+                "Privacy-focused design",
+                "Support for JPEG images"
+            ]
+        }
+        </script>
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <div class="container">
+            <header>
+                <h1>Photo Metadata Remover</h1>
+                <p>Upload a photo to view and remove EXIF metadata</p>
+            </header>
+
+            <main>
+                <!-- Upload Area -->
+                <div id="upload-area" class="upload-area">
+                    <div class="upload-content">
+                        <div class="upload-icon">📷</div>
+                        <h3>Drag & Drop Your Photo Here</h3>
+                        <p>or click to browse</p>
+                        <p class="supported-formats">Supports: JPG, JPEG</p>
+                        <input type="file" id="file-input" accept=".jpg,.jpeg" hidden>
+                    </div>
+                </div>
+
+                <!-- Image Preview -->
+                <div id="image-preview" class="image-preview hidden">
+                    <img id="preview-img" alt="Uploaded image">
+                    <div class="image-info">
+                        <h3 id="image-name"></h3>
+                        <p id="image-size"></p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="action-buttons" class="action-buttons hidden">
+                    <button id="download-btn" class="btn btn-primary">Download Cleaned Image</button>
+                    <button id="reset-btn" class="btn btn-secondary">Upload New Image</button>
+                </div>
+
+                <!-- Metadata Groups -->
+                <div id="metadata-container" class="metadata-container hidden">
+                    <!-- Sensitive Data Group -->
+                    <div class="metadata-group sensitive-group">
+                        <div class="group-header">
+                            <h3>
+                                <span class="group-icon">⚠️</span>
+                                Sensitive Data
+                            </h3>
+                            <label class="master-checkbox">
+                                <input type="checkbox" id="sensitive-master">
+                                <span class="checkmark"></span>
+                                Remove All
+                            </label>
+                        </div>
+                        <div id="sensitive-metadata" class="metadata-list">
+                            <!-- Sensitive metadata items will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Properties Group -->
+                    <div class="metadata-group properties-group">
+                        <div class="group-header">
+                            <h3>
+                                <span class="group-icon">🔧</span>
+                                Properties
+                            </h3>
+                            <label class="master-checkbox">
+                                <input type="checkbox" id="properties-master">
+                                <span class="checkmark"></span>
+                                Remove All
+                            </label>
+                        </div>
+                        <div id="properties-metadata" class="metadata-list">
+                            <!-- Properties metadata items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Information -->
+                <div class="privacy-info">
+                    <div class="privacy-card">
+                        <h3>🔒 Your Privacy is Protected</h3>
+                        <p>All photo processing happens directly in your browser on your device. Your images are never
+                            uploaded to any server or sent anywhere online.</p>
+
+                        <div class="privacy-features">
+                            <div class="privacy-feature">
+                                <span class="feature-icon">💻</span>
+                                <div>
+                                    <strong>Local Processing</strong>
+                                    <p>All metadata extraction and removal happens on your computer</p>
+                                </div>
+                            </div>
+
+                            <div class="privacy-feature">
+                                <span class="feature-icon">🚫</span>
+                                <div>
+                                    <strong>No Uploads</strong>
+                                    <p>Your photos never leave your device or get sent to any server</p>
+                                </div>
+                            </div>
+
+                            <div class="privacy-feature">
+                                <span class="feature-icon">🔐</span>
+                                <div>
+                                    <strong>Completely Secure</strong>
+                                    <p>Your sensitive data stays private and under your control</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <a href="https://andrewsink.xyz" target="_blank" rel="noopener noreferrer">Andrew Sink - 2025</a>
+        </footer>
+
+        <!-- Scroll to Bottom Button -->
+        <button id="scroll-to-bottom" class="scroll-to-bottom" title="Scroll to bottom">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+        </button>
+
+        <!-- Include EXIF.js library -->
+        <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js"></script>
+        <script src="script.js"></script>
+    </body>
+
+</html>
