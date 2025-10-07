@@ -4,8 +4,7 @@ A secure, privacy-focused web application that removes EXIF metadata from JPEG p
 
 Photo Metadata Remover: https://andrewsink.github.io/photo-metadata-remover/
 
-<img width="1281" height="894" alt="image" src="https://github.com/user-attachments/assets/e77243d3-7569-413b-97ed-c42077c83d33" />
-
+<img width="1262" height="868" alt="image" src="https://github.com/user-attachments/assets/85c67560-9fa1-45bf-b2bf-e6dbdc26b4fb" />
 
 ## 🔒 Privacy First
 
