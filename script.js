@@ -16,18 +16,16 @@ const propertiesMetadata = document.getElementById('properties-metadata');
 const actionButtons = document.getElementById('action-buttons');
 const downloadBtn = document.getElementById('download-btn');
 const resetBtn = document.getElementById('reset-btn');
-const sensitiveMaster = document.getElementById('sensitive-master');
-const propertiesMaster = document.getElementById('properties-master');
 const scrollToBottomBtn = document.getElementById('scroll-to-bottom');
 
-// Sensitive metadata keys (privacy-related)
+// Sensitive metadata keys (privacy-related) - excluding Software
 const sensitiveKeys = [
     'GPS', 'GPSLatitude', 'GPSLongitude', 'GPSAltitude', 'GPSTimeStamp',
     'GPSDateStamp', 'GPSProcessingMethod', 'GPSAreaInformation',
     'DateTime', 'DateTimeOriginal', 'DateTimeDigitized',
     'UserComment', 'ImageDescription', 'Artist', 'Copyright',
     'CameraOwnerName', 'BodySerialNumber', 'LensSerialNumber',
-    'Software', 'ProcessingSoftware', 'HostComputer'
+    'ProcessingSoftware', 'HostComputer'
 ];
 
 // Initialize event listeners
@@ -44,10 +42,6 @@ function initializeEventListeners() {
 
     // File input change
     fileInput.addEventListener('change', handleFileSelect);
-
-    // Master checkboxes
-    sensitiveMaster.addEventListener('change', handleSensitiveMasterChange);
-    propertiesMaster.addEventListener('change', handlePropertiesMasterChange);
 
     // Action buttons
     downloadBtn.addEventListener('click', downloadCleanedImage);
@@ -167,17 +161,71 @@ function displayMetadata(metadata) {
         }
     });
 
-    // Display sensitive metadata
-    displayMetadataGroup(sensitiveData, sensitiveMetadata, 'sensitive');
+    // Sort sensitive data to prioritize Date/Time first, then GPS metadata
+    const sortedSensitiveData = {};
+    const dateTimeKeys = [];
+    const gpsKeys = [];
+    const otherKeys = [];
 
-    // Display properties metadata
-    displayMetadataGroup(propertiesData, propertiesMetadata, 'properties');
+    Object.keys(sensitiveData).forEach(key => {
+        if (key.toLowerCase().includes('date') || key.toLowerCase().includes('time')) {
+            dateTimeKeys.push(key);
+        } else if (key.toLowerCase().includes('gps')) {
+            gpsKeys.push(key);
+        } else {
+            otherKeys.push(key);
+        }
+    });
 
-    // Reset checkboxes
+    // Sort each group alphabetically and add in priority order
+    dateTimeKeys.sort().forEach(key => {
+        sortedSensitiveData[key] = sensitiveData[key];
+    });
+
+    gpsKeys.sort().forEach(key => {
+        sortedSensitiveData[key] = sensitiveData[key];
+    });
+
+    otherKeys.sort().forEach(key => {
+        sortedSensitiveData[key] = sensitiveData[key];
+    });
+
+    // Display sensitive metadata (sorted)
+    displayMetadataGroup(sortedSensitiveData, sensitiveMetadata, 'sensitive');
+
+    // Display properties metadata (sorted with priorities)
+    const sortedPropertiesData = {};
+    const makeModelKeys = [];
+    const softwareKeys = [];
+    const otherPropertiesKeys = [];
+
+    Object.keys(propertiesData).forEach(key => {
+        if (key.toLowerCase() === 'make' || key.toLowerCase() === 'model') {
+            makeModelKeys.push(key);
+        } else if (key.toLowerCase().includes('software')) {
+            softwareKeys.push(key);
+        } else {
+            otherPropertiesKeys.push(key);
+        }
+    });
+
+    // Sort each group and add in priority order: Make/Model first, then Software, then others
+    makeModelKeys.sort().forEach(key => {
+        sortedPropertiesData[key] = propertiesData[key];
+    });
+
+    softwareKeys.sort().forEach(key => {
+        sortedPropertiesData[key] = propertiesData[key];
+    });
+
+    otherPropertiesKeys.sort().forEach(key => {
+        sortedPropertiesData[key] = propertiesData[key];
+    });
+
+    displayMetadataGroup(sortedPropertiesData, propertiesMetadata, 'properties');
+
+    // Reset metadata selection
     selectedMetadataToRemove.clear();
-    sensitiveMaster.checked = false;
-    propertiesMaster.checked = false;
-    updateDownloadButtonText();
 }
 
 function displayMetadataGroup(data, container, groupType) {
@@ -206,15 +254,7 @@ function createMetadataItem(key, value, groupType) {
             <div class="metadata-key">${formatMetadataKey(key)}</div>
             <div class="metadata-value">${formattedValue}</div>
         </div>
-        <label class="metadata-checkbox">
-            <input type="checkbox" data-key="${key}" data-group="${groupType}">
-            <span class="checkmark"></span>
-        </label>
     `;
-
-    // Add event listener to checkbox
-    const checkbox = item.querySelector('input[type="checkbox"]');
-    checkbox.addEventListener('change', handleMetadataCheckboxChange);
 
     return item;
 }
@@ -339,72 +379,6 @@ function isSensitiveKey(key) {
     );
 }
 
-function handleMetadataCheckboxChange(e) {
-    const key = e.target.dataset.key;
-
-    if (e.target.checked) {
-        selectedMetadataToRemove.add(key);
-    } else {
-        selectedMetadataToRemove.delete(key);
-    }
-
-    updateMasterCheckboxes();
-    updateDownloadButtonText();
-}
-
-function handleSensitiveMasterChange(e) {
-    const sensitiveCheckboxes = sensitiveMetadata.querySelectorAll('input[type="checkbox"]');
-
-    sensitiveCheckboxes.forEach(checkbox => {
-        checkbox.checked = e.target.checked;
-        const key = checkbox.dataset.key;
-
-        if (e.target.checked) {
-            selectedMetadataToRemove.add(key);
-        } else {
-            selectedMetadataToRemove.delete(key);
-        }
-    });
-
-    updateDownloadButtonText();
-}
-
-function handlePropertiesMasterChange(e) {
-    const propertiesCheckboxes = propertiesMetadata.querySelectorAll('input[type="checkbox"]');
-
-    propertiesCheckboxes.forEach(checkbox => {
-        checkbox.checked = e.target.checked;
-        const key = checkbox.dataset.key;
-
-        if (e.target.checked) {
-            selectedMetadataToRemove.add(key);
-        } else {
-            selectedMetadataToRemove.delete(key);
-        }
-    });
-
-    updateDownloadButtonText();
-}
-
-function updateMasterCheckboxes() {
-    // Check sensitive master checkbox state
-    const sensitiveCheckboxes = sensitiveMetadata.querySelectorAll('input[type="checkbox"]');
-    const checkedSensitive = Array.from(sensitiveCheckboxes).filter(cb => cb.checked);
-    sensitiveMaster.checked = sensitiveCheckboxes.length > 0 && checkedSensitive.length === sensitiveCheckboxes.length;
-
-    // Check properties master checkbox state
-    const propertiesCheckboxes = propertiesMetadata.querySelectorAll('input[type="checkbox"]');
-    const checkedProperties = Array.from(propertiesCheckboxes).filter(cb => cb.checked);
-    propertiesMaster.checked = propertiesCheckboxes.length > 0 && checkedProperties.length === propertiesCheckboxes.length;
-}
-
-function updateDownloadButtonText() {
-    if (selectedMetadataToRemove.size === 0) {
-        downloadBtn.textContent = 'Download Image (No Changes)';
-    } else {
-        downloadBtn.textContent = 'Download Cleaned Image';
-    }
-}
 
 async function downloadCleanedImage() {
     if (!currentImageFile) {
@@ -417,13 +391,7 @@ async function downloadCleanedImage() {
         downloadBtn.textContent = 'Processing...';
         downloadBtn.disabled = true;
 
-        // If no metadata is selected for removal, download original file
-        if (selectedMetadataToRemove.size === 0) {
-            downloadOriginalFile();
-            return;
-        }
-
-        // If metadata is selected, strip all metadata using canvas
+        // Always strip all metadata using canvas
         let fileToProcess = currentImageFile;
         let outputType = currentImageFile.type;
         let outputName = `cleaned_${currentImageFile.name}`;
@@ -438,7 +406,7 @@ async function downloadCleanedImage() {
             canvas.width = img.width;
             canvas.height = img.height;
 
-            // Draw image to canvas (this removes EXIF data)
+            // Draw image to canvas (this removes ALL EXIF data)
             ctx.drawImage(img, 0, 0);
 
             // Convert canvas to blob
@@ -454,12 +422,11 @@ async function downloadCleanedImage() {
                 URL.revokeObjectURL(url);
 
                 // Reset button state
-                updateDownloadButtonText();
+                downloadBtn.textContent = 'Download Cleaned Image';
                 downloadBtn.disabled = false;
 
                 // Show success message
-                const selectedCount = selectedMetadataToRemove.size;
-                showNotification(`Image downloaded successfully! ${selectedCount} metadata field${selectedCount > 1 ? 's' : ''} removed.`, 'success');
+                showNotification('Image downloaded successfully! All metadata has been removed.', 'success');
             }, outputType);
         };
 
@@ -475,28 +442,9 @@ async function downloadCleanedImage() {
         alert('Error processing image. Please try again.');
 
         // Reset button state
-        updateDownloadButtonText();
+        downloadBtn.textContent = 'Download Cleaned Image';
         downloadBtn.disabled = false;
     }
-}
-
-function downloadOriginalFile() {
-    // Create download link for original file
-    const url = URL.createObjectURL(currentImageFile);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = currentImageFile.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    // Reset button state
-    updateDownloadButtonText();
-    downloadBtn.disabled = false;
-
-    // Show success message
-    showNotification('Original image downloaded with no changes.', 'success');
 }
 
 function resetApplication() {
@@ -517,10 +465,6 @@ function resetApplication() {
     // Clear metadata containers
     sensitiveMetadata.innerHTML = '';
     propertiesMetadata.innerHTML = '';
-
-    // Reset checkboxes
-    sensitiveMaster.checked = false;
-    propertiesMaster.checked = false;
 
     // Reset button text
     downloadBtn.textContent = 'Download Cleaned Image';
