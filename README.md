@@ -2,6 +2,11 @@
 
 A secure, privacy-focused web application that removes EXIF metadata from JPEG photos directly in your browser.
 
+Photo Metadata Remover: https://andrewsink.github.io/photo-metadata-remover/
+
+<img width="1281" height="894" alt="image" src="https://github.com/user-attachments/assets/e77243d3-7569-413b-97ed-c42077c83d33" />
+
+
 ## 🔒 Privacy First
 
 - **100% Local Processing** - Your photos never leave your device
@@ -16,10 +21,6 @@ A secure, privacy-focused web application that removes EXIF metadata from JPEG p
 - **Selective Removal** - Choose which metadata to remove
 - **Instant Download** - Get your cleaned photos immediately
 - **Mobile Friendly** - Works on all devices
-
-## 🚀 Live Demo
-
-Visit: [https://andrewsink.xyz/photo-metadata-remover/](https://andrewsink.xyz/photo-metadata-remover/)
 
 ## 📸 Supported Formats
 
